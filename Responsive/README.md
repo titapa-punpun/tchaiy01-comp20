@@ -11,7 +11,7 @@ responsive.css past the css file test.
 
 
 COLLABORATION:
-No one. 
+TA Michael (helped with pushing responsive onto Github)
 
 
 TIME SPENT: 
