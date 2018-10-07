@@ -4,3 +4,10 @@
  	color: #5F217F;
  	font-size: 18px;
  } 
+
+ h1 {
+ 	text-align: center;
+ 	font-family: "Times New Roman";
+ 	color: #000000;
+ 	font-size: 40px;
+ }
