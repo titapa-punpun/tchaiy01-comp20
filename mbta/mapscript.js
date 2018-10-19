@@ -1,7 +1,7 @@
 var mapCanvas;
 
 // multiple markers
-var markers = [
+var stations = [
     ['South Station', 42.352271, -71.05524200000001],
     ['Andrew', 42.330154, -71.057655],
     ['Porter Square', 42.3884, -71.11914899999999],
@@ -27,7 +27,7 @@ var markers = [
 ];
 
 function initMap() {
-    var myLatLng = {lat: 42.352271, lng: -71.05524200000001}
+    var myLatLng = {lat: 42.352271, lng: -71.05524200000001};
 
     // display a map on the page
     mapCanvas = new google.maps.Map(document.getElementById('mapCanvas'), {
@@ -46,32 +46,28 @@ function initMap() {
         '</div>']
     ];
 
-    // display multiple markers on the map
-    var infoWindow = new google.maps.InfoWindow(), marker, i; 
+    placeMarkers();
 
+    // display multiple markers on the map
+    // var infoWindow = new google.maps.InfoWindow(), marker, i; 
+
+
+}
+
+function placeMarkers() {
     // loop through array of markers and place each one on the map
-    console.log("The total markers length is: ", markers.length);
-    for (var i = 0; i < markers.length; i++) {
-        var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(markers[i][1], markers[i][2]),
+    for (var i = 0; i < stations.length; i++) {
+        var markers = new google.maps.Marker({
+            position: new google.maps.LatLng(stations[i][1], stations[i][2]),
             map: mapCanvas,
-            title: markers[i][0],
+            title: stations[i][0],
         });
-        google.maps.event.addListener(markers, 'click', (function(markers,i) {
+        google.maps.event.addListener(stations, 'click', (function(stations,i) {
         return function() {
             infoWindow.setContent(infoWindowContent[i][0]);
-            infoWindow.open(map, markers);
-        }
-    }));
+            infoWindow.open(map, stations);
+            }
+        }));
     }
-    
-
-    // allow each marker to have an info window
-
-
-    var stations = new google.maps.Marker({
-        position: myLatLng,
-        map: mapCanvas,
-        title: 'South Station'
-    });
 }
+
