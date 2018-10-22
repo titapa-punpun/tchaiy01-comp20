@@ -129,11 +129,11 @@ function loadTrainSchedule() {
             console.log(request);
             stationSchedule = JSON.parse(theData);
             var content = "<h2>" + "station name" + "</h2>";
-            theData.data.forEach(function(data){
-                var arr_time = data.attributes.arrival_time;
-                var dept_time = data.attributes.departure_time;
-                var direction_id = data.attributes.direction_id;
-            })
+            // theData.data.forEach(function(data){
+            //     var arr_time = theData.attributes.arrival_time;
+            //     var dept_time = theData.attributes.departure_time;
+            //     var direction_id = theData.attributes.direction_id;
+            // });
             console.log(stationSchedule);
             makeInfoWindows(stationSchedule);
         } 
@@ -148,8 +148,8 @@ function makeInfoWindows(stationSchedule) {
         google.maps.event.addListener(markers[i], 'click', (function(markers, i) {
             return function() {
                 console.log(infoWindow);
-                infoWindow.setContent(stationSchedule);
-                infoWindow.open(mapCanvas, this);
+                infoWindow.setContent(stations[i][0]);
+                infoWindow.open(mapCanvas, markers);
                 infoWindow = document.getElementById('infoWindow');
             }
         })(markers, i));
