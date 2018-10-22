@@ -43,9 +43,9 @@ var mainPathCoords = [
     {lat: 42.330154, lng: -71.057655},
     {lat: 42.320685, lng: -71.052391}, // JKF/UMass
     {lat: 42.31129, lng: -71.053331},
-    {lat: 42.284652, lng: -71.06448899999999},
-    {lat: 42.29312583, lng: -71.06573796000001},
     {lat: 42.300093, lng: -71.061667},
+    {lat: 42.29312583, lng: -71.06573796000001},
+    {lat: 42.284652, lng: -71.06448899999999},
 ]; 
 
 var subPathCoords = [
@@ -69,7 +69,7 @@ function initMap() {
     getLocation(mapCanvas);
     placeMarkers();
     makeLines();
-    // loadTrainSchedule();
+    loadTrainSchedule();
 }
 
 function getLocation(myMap) {
@@ -83,8 +83,9 @@ function getLocation(myMap) {
                 title: "Me wohooo",
             })
             // mapCanvas.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
-            mapCanvas.setCenter(meMarker.getPosition());
+            // mapCanvas.setCenter(meMarker.getPosition());
             // mapCanvas.setZoom(10);
+            mapCanvas.panTo(meMarker);
         });
     }
     else 
@@ -126,23 +127,28 @@ function loadTrainSchedule() {
             theData = request.responseText;
             console.log(theData);
             console.log(request);
-            stations = JSON.parse(theData);
-            makeInfoWindows(theData);
+            stationSchedule = JSON.parse(theData);
+            var content = "<h2>" + "station name" + "</h2>";
+            theData.data.forEach(function(data){
+                var arr_time = data.attributes.arrival_time;
+                var dept_time = data.attributes.departure_time;
+                var direction_id = data.attributes.direction_id;
+            })
+            console.log(stationSchedule);
+            makeInfoWindows(stationSchedule);
         } 
     }
 }
 
-function makeInfoWindows(theData) {
+function makeInfoWindows(stationSchedule) {
     console.log(markers);
     var infoWindow = new google.maps.InfoWindow();
-    var content = theData;
-
+    
     for (var i = 0; i < stations.length; i++)  {
         google.maps.event.addListener(markers[i], 'click', (function(markers, i) {
-            // console.log("added event listener");
             return function() {
                 console.log(infoWindow);
-                infoWindow.setContent(this.content);
+                infoWindow.setContent(stationSchedule);
                 infoWindow.open(mapCanvas, this);
                 infoWindow = document.getElementById('infoWindow');
             }
