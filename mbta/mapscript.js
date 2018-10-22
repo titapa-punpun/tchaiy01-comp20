@@ -2,8 +2,7 @@ var mapCanvas;
 var myLat = 0;
 var myLng = 0;
 var markers = [];
-var schedule;
-
+ 
 var stations = [
     ['South Station', 42.352271, -71.05524200000001, 'place-sstat'],
     ['Andrew', 42.330154, -71.057655, 'place-andrw'],
@@ -64,7 +63,7 @@ function initMap() {
     // display a map on the page
     mapCanvas = new google.maps.Map(document.getElementById('mapCanvas'), {
     center: myLatLng,
-    zoom: 12
+    zoom: 12,
     });
 
     getLocation(mapCanvas);
@@ -83,7 +82,9 @@ function getLocation(myMap) {
                 map: myMap,
                 title: "Me wohooo",
             })
-            // mapCanvas.setCenter(meMarker);
+            // mapCanvas.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+            mapCanvas.setCenter(meMarker.getPosition());
+            // mapCanvas.setZoom(10);
         });
     }
     else 
@@ -93,24 +94,21 @@ function getLocation(myMap) {
 function placeMarkers() {
     // loop through array of markers and place each one on the map
     var MBTALogo = 'MBTA_logo.png';
-
+    console.log("in placeMarkers");
     for (var i = 0; i < stations.length; i++) {
         markers[i] = new google.maps.Marker({
             position: new google.maps.LatLng(stations[i][1], stations[i][2]),
             map: mapCanvas,
             title: stations[i][0],
             icon: MBTALogo,
-            clickable: true
         });
     }
-    loadTrainSchedule();
 }
 
 function loadTrainSchedule() {
     // step 1: make instance of XHR object
     var request = new XMLHttpRequest();
     console.log("new XMLHttpRequest created");
-
     // step 2: open JSON file at remote location
     var i;
     for (i = 0; i < stations.length; i++) {
@@ -118,7 +116,6 @@ function loadTrainSchedule() {
         request.open("GET", URL, true);
         request.send();
     }
-
     // step 3: set up callback for when HTTP response is returned (when you get JSON file back)
     request.onreadystatechange = function() {
         console.log("setting up callback");
@@ -137,28 +134,25 @@ function loadTrainSchedule() {
 
 function makeInfoWindows(theData) {
     console.log(markers);
-    var infoWindow = new google.maps.InfoWindow({
-        content: theData
-    });
+    var infoWindow = new google.maps.InfoWindow();
+    var content = theData;
 
     for (var i = 0; i < stations.length; i++)  {
-        // console.log("in for loop");
         google.maps.event.addListener(markers[i], 'click', (function(markers, i) {
             // console.log("added event listener");
             return function() {
-                // console.log("about to set content");
                 console.log(infoWindow);
                 infoWindow.setContent(this.content);
                 infoWindow.open(mapCanvas, this);
-                // console.log("opened");
                 infoWindow = document.getElementById('infoWindow');
-                // console.log("got element by id");
             }
         })(markers, i));
     }
 }
 
 function makeLines() {
+    console.log(mainPathCoords);
+    console.log(subPathCoords);
     var mainPath = new google.maps.Polyline({
         path: mainPathCoords,
         geodesic: true,
@@ -176,24 +170,6 @@ function makeLines() {
     }); subPath.setMap(mapCanvas);
 }
 
-// function loadTrainSchedule() {
-//     infoWindow = document.getElementById('infoWindow');
-//     infoWindow.addEventListener("click", function(){
-//         var request = new XMLHttpRequest();
-//         var i = 0;
-//         var stationIDs = stations[i][3];
-
-//         for (i = 0; i < stations.length; i++) {
-//             var url = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stationIDs;
-//             request.open('GET', url);
-//             request.onload = function() {
-//                 console.log(request.responseText);
-//                 console.log("got URL");
-//             }
-//         }
-//         request.send();
-//     }); 
-// }
 
 
 
