@@ -66,9 +66,8 @@ function initMap() {
     zoom: 12,
     });
 
-    getLocation(mapCanvas);
-    
     placeMarkers(content);
+    getLocation(mapCanvas);
     makeLines();
 }
 
@@ -83,10 +82,7 @@ function getLocation(myMap) {
                 title: "Me wohooo",
             })
             meMarker.setMap(mapCanvas);
-            // mapCanvas.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
-            // mapCanvas.setCenter(meMarker.getPosition());
-            // mapCanvas.setZoom(10);
-            // mapCanvas.panTo(google.maps.LatLng({lat: myLat, lng: myLng}));
+            // mapCanvas.panTo(meMarker);
         });
     }
     else 
@@ -94,42 +90,30 @@ function getLocation(myMap) {
 }
 
 function loadTrainSchedule() {
-    // step 1: make instance of XHR object
     var request = new XMLHttpRequest();
-    console.log("new XMLHttpRequest created");
-    // step 2: open JSON file at remote location
     var i;
     for (i = 0; i < stations.length; i++) {
         var URL = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stations[i][3];
         request.open('GET', URL, true);
-        // request.responseType = 'json';
-        // request.send();
     }
-    // step 3: set up callback for when HTTP response is returned (when you get JSON file back)
     request.onreadystatechange = function() {
-        console.log("setting up callback");
-
-        // anything in this loop will wait till i actually have data to send it (it'll wait)
         if (request.readyState == 4 && request.status == 200) {
-            // step 5: when we get all the JSON data back, parse it and use it
             theData = request.responseText;
-            // console.log(theData);
             stationSchedule = JSON.parse(theData);
-            // console.log(stationSchedule);
             for (var i = 0; i < stationSchedule.data.length; i++) {
                 var arrival, departure, boundFor;
                 var arr_time = stationSchedule.data[i].attributes.arrival_time;
-                console.log("this is arr time " + arr_time);
+                // console.log("this is arr time " + arr_time);
                 var dept_time = stationSchedule.data[i].attributes.departure_time;
-                console.log("this is dept time " + dept_time);
+                // console.log("this is dept time " + dept_time);
                 var bound = stationSchedule.data[i].attributes.direction_id;
-                console.log("direction " + bound);
+                // console.log("direction " + bound);
                 if (dept_time == null) {
                     departure = "Not Available"; 
                 }
                 else {
                     departure = dept_time.split("T"),
-                    console.log(departure[1]);
+                    console.log("departure time: " + departure[1]);
                 }
                 if (arr_time == null) {
                     arrival = "Not Available";
@@ -140,35 +124,29 @@ function loadTrainSchedule() {
                 }
                 if (bound == 0) {
                     boundFor = "Southbound";
-                    console.log(boundFor);
+                    console.log("Bound direction: " + boundFor);
                 }
                 if (bound == 1) {
                     boundFor = "Northbound";
-                    console.log(boundFor);
+                    console.log("Bound direction: " + boundFor);
 
                 }
-                var content =+ "<h3>" + "Arrival time: " + "</h3>" + "<h4>" 
+                content += "<h3>" + "Arrival time: " + "</h3>" + "<h4>" 
                 + arrival[1] + "<h4>" + "<br>" + "<h3>" + "Departure time: " 
                 + "</h3>" + "<h4>" + departure[1] + "</h4>" + "<h3>" + 
                 "Bounded for: " + "</h3>" + "<h4>" + boundFor + "</h4>";
-                console.log(content);
+                console.log(content),
+                infoWindow.setContent(content);
             };
         } 
-        else {
-            console.log("In progress...");
-        }
-        console.log(content),
-        infoWindow.setContent(content);
     }
     request.send();
+    return infoWindow;
 }
 
 
 function placeMarkers() {
-    // loop through array of markers and place each one on the map
     var MBTALogo = 'MBTA_logo.png';
-
-    console.log("in placeMarkers");
     for (var i = 0; i < stations.length; i++) {        
         var marker = new google.maps.Marker({
             position: {lat: stations[i][1], lng: stations[i][2]},
