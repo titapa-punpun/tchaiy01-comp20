@@ -67,7 +67,7 @@ function initMap() {
 
     getLocation(mapCanvas);
     loadTrainSchedule();
-    placeMarkers();
+    placeMarkers(content);
     makeLines();
 }
 
@@ -102,7 +102,7 @@ function loadTrainSchedule() {
         var URL = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stations[i][3];
         request.open('GET', URL, true);
         // request.responseType = 'json';
-        request.send();
+        // request.send();
     }
     // step 3: set up callback for when HTTP response is returned (when you get JSON file back)
     request.onreadystatechange = function() {
@@ -116,37 +116,69 @@ function loadTrainSchedule() {
             stationSchedule = JSON.parse(theData);
             console.log(stationSchedule);
             for (var i = 0; i < stationSchedule.data.length; i++) {
+                var arrival, departure, boundFor;
                 var arr_time = stationSchedule.data[i].attributes.arrival_time;
                 console.log(arr_time);
                 var dept_time = stationSchedule.data[i].attributes.departure_time;
                 console.log(dept_time);
                 var bound = stationSchedule.data[i].attributes.direction_id;
                 console.log(bound);
-                // var content = "<p>Arrival Time: </p>" + stationSchedule[i].arr_time + "<p>Departure Time: </p>" + stationSchedule[i].dept_time;
-                // console.log(content);
+                if (dept_time == null) {
+                    departure = "Not Available"; 
+                }
+                else {
+                    departure = dept_time.split("T"),
+                    console.log(departure[1]);
+                }
+                if (arr_time == null) {
+                    arrival = arr_time.split("T"),
+                    console.log(arrival[1]);
+                }
+                else {
+                    arrival = arr_time.split("T"),
+                    console.log(arrival[1]);
+                }
+                if (bound == 0) {
+                    boundFor = "Southbound";
+                }
+                if (bound == 1) {
+                    boundFor = "Northbound";
+                }
+                var content =+ "<h3>" + "Arrival time: " + "</h3>" + "<h4>" 
+                + arrival[1] + "<h4>" + "<br>" + "<h3>" + "Departure time: " 
+                + "</h3>" + "<h4>" + departure[1] + "</h4>" + "<h3>" + 
+                "Bounded for: " + "</h3>" + "<h4>" + boundFor + "</h4>" +
+                console.log(content);
             };
         } 
+        else {
+            console.log("In progress...");
+        }
+        console.log(content),
+        infoWindow.setContent(content);
     }
+    request.send();
+    return infoWindow;
 }
 
-function placeMarkers(stationName) {
+
+function placeMarkers(content) {
     // loop through array of markers and place each one on the map
     var MBTALogo = 'MBTA_logo.png';
 
     console.log("in placeMarkers");
-    for (var i = 0; i < stations.length; i++) {
-        var stationName = stations[i][0];
-        
+    for (var i = 0; i < stations.length; i++) {        
         var marker = new google.maps.Marker({
             position: {lat: stations[i][1], lng: stations[i][2]},
             map: mapCanvas,
             title: stations[i][0],
             icon: MBTALogo,
         });
-        var infoWindow = new google.maps.InfoWindow;
+        marker.setMap(mapCanvas);
+        var infoWindow = new google.maps.InfoWindow();
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-                infoWindow.setContent(stations[i][0]);
+                infoWindow.setContent(content);
                 infoWindow.open(mapCanvas, marker);
             }
         })(marker, i));
