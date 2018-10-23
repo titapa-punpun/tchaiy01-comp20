@@ -3,7 +3,7 @@ var myLat = 0;
 var myLng = 0;
 var markers = [];
 var content;
-var marker;
+var infoWindow;
   
 var stations = [
     ['South Station', 42.352271, -71.05524200000001, 'place-sstat'],
@@ -67,8 +67,8 @@ function initMap() {
     });
 
     getLocation(mapCanvas);
-    loadTrainSchedule();
-    placeMarkers();
+    
+    placeMarkers(content);
     makeLines();
 }
 
@@ -113,17 +113,17 @@ function loadTrainSchedule() {
         if (request.readyState == 4 && request.status == 200) {
             // step 5: when we get all the JSON data back, parse it and use it
             theData = request.responseText;
-            console.log(theData);
+            // console.log(theData);
             stationSchedule = JSON.parse(theData);
-            console.log(stationSchedule);
+            // console.log(stationSchedule);
             for (var i = 0; i < stationSchedule.data.length; i++) {
                 var arrival, departure, boundFor;
                 var arr_time = stationSchedule.data[i].attributes.arrival_time;
-                console.log(arr_time);
+                console.log("this is arr time " + arr_time);
                 var dept_time = stationSchedule.data[i].attributes.departure_time;
-                console.log(dept_time);
+                console.log("this is dept time " + dept_time);
                 var bound = stationSchedule.data[i].attributes.direction_id;
-                console.log(bound);
+                console.log("direction " + bound);
                 if (dept_time == null) {
                     departure = "Not Available"; 
                 }
@@ -132,23 +132,25 @@ function loadTrainSchedule() {
                     console.log(departure[1]);
                 }
                 if (arr_time == null) {
-                    arrival = arr_time.split("T"),
-                    console.log(arrival[1]);
+                    arrival = "Not Available";
                 }
                 else {
                     arrival = arr_time.split("T"),
-                    console.log(arrival[1]);
+                    console.log("arrival here: " + arrival[1]);
                 }
                 if (bound == 0) {
                     boundFor = "Southbound";
+                    console.log(boundFor);
                 }
                 if (bound == 1) {
                     boundFor = "Northbound";
+                    console.log(boundFor);
+
                 }
                 var content =+ "<h3>" + "Arrival time: " + "</h3>" + "<h4>" 
                 + arrival[1] + "<h4>" + "<br>" + "<h3>" + "Departure time: " 
                 + "</h3>" + "<h4>" + departure[1] + "</h4>" + "<h3>" + 
-                "Bounded for: " + "</h3>" + "<h4>" + boundFor + "</h4>" +
+                "Bounded for: " + "</h3>" + "<h4>" + boundFor + "</h4>";
                 console.log(content);
             };
         } 
@@ -159,7 +161,6 @@ function loadTrainSchedule() {
         infoWindow.setContent(content);
     }
     request.send();
-    // return infoWindow;
 }
 
 
@@ -169,28 +170,24 @@ function placeMarkers() {
 
     console.log("in placeMarkers");
     for (var i = 0; i < stations.length; i++) {        
-        marker = new google.maps.Marker({
+        var marker = new google.maps.Marker({
             position: {lat: stations[i][1], lng: stations[i][2]},
             map: mapCanvas,
             title: stations[i][0],
             icon: MBTALogo,
         });
         marker.setMap(mapCanvas);
-    }
-    makeInfoWindows();
-}
-
-function makeInfoWindows() {
-    for (var i = 0; i < stations.length; i++) {
-        var infoWindow = new google.maps.InfoWindow();
+        infoWindow = new google.maps.InfoWindow();
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-                infoWindow.setContent(stations[i][0]);
+                // infoWindow.setContent(stations[i][0]);
                 infoWindow.open(mapCanvas, marker);
             }
         })(marker, i));
     }
+    loadTrainSchedule();
 }
+
 
 function makeLines() {
     console.log(mainPathCoords);
