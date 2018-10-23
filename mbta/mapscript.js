@@ -3,6 +3,7 @@ var myLat = 0;
 var myLng = 0;
 var markers = [];
 var content;
+var marker;
   
 var stations = [
     ['South Station', 42.352271, -71.05524200000001, 'place-sstat'],
@@ -67,7 +68,7 @@ function initMap() {
 
     getLocation(mapCanvas);
     loadTrainSchedule();
-    placeMarkers(content);
+    placeMarkers();
     makeLines();
 }
 
@@ -158,33 +159,38 @@ function loadTrainSchedule() {
         infoWindow.setContent(content);
     }
     request.send();
-    return infoWindow;
+    // return infoWindow;
 }
 
 
-function placeMarkers(content) {
+function placeMarkers() {
     // loop through array of markers and place each one on the map
     var MBTALogo = 'MBTA_logo.png';
 
     console.log("in placeMarkers");
     for (var i = 0; i < stations.length; i++) {        
-        var marker = new google.maps.Marker({
+        marker = new google.maps.Marker({
             position: {lat: stations[i][1], lng: stations[i][2]},
             map: mapCanvas,
             title: stations[i][0],
             icon: MBTALogo,
         });
         marker.setMap(mapCanvas);
+    }
+    makeInfoWindows();
+}
+
+function makeInfoWindows() {
+    for (var i = 0; i < stations.length; i++) {
         var infoWindow = new google.maps.InfoWindow();
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-                infoWindow.setContent(content);
+                infoWindow.setContent(stations[i][0]);
                 infoWindow.open(mapCanvas, marker);
             }
         })(marker, i));
     }
 }
-
 
 function makeLines() {
     console.log(mainPathCoords);
