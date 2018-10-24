@@ -4,7 +4,7 @@ var myLng = 0;
 var markers = [];
 var content;
 var infoWindow;
-   
+    
 var stations = [
     ['South Station', 42.352271, -71.05524200000001, 'place-sstat'],
     ['Andrew', 42.330154, -71.057655, 'place-andrw'],
@@ -69,23 +69,28 @@ function initMap() {
     placeMarkers(content);
     getLocation(mapCanvas);
     makeLines();
+    computeDistance();
 }
 
-function getLocation(myMap) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            console.log(position);
-            meMarker = new google.maps.Marker({
-                position: {lat: position.coords.latitude, lng: position.coords.longitude},
-                map: myMap,
-                title: "Me wohooo",
-            })
-            meMarker.setMap(mapCanvas);
-            mapCanvas.panTo({lat: position.coords.latitude, lng: position.coords.longitude});
+function placeMarkers() {
+    var MBTALogo = 'MBTA_logo.png';
+    for (var i = 0; i < stations.length; i++) {        
+        var marker = new google.maps.Marker({
+            stopID: stations[i][3],
+            position: {lat: stations[i][1], lng: stations[i][2]},
+            map: mapCanvas,
+            title: stations[i][0],
+            icon: MBTALogo,
         });
+        marker.setMap(mapCanvas);
+        infoWindow = new google.maps.InfoWindow();
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.open(mapCanvas, marker);
+                loadTrainSchedule(marker);
+            }
+        })(marker, i));
     }
-    else 
-        alert("geolocation is not supported");
 }
 
 function loadTrainSchedule(marker) {
@@ -140,29 +145,22 @@ function loadTrainSchedule(marker) {
     return infoWindow;
 }
 
-
-function placeMarkers() {
-    var MBTALogo = 'MBTA_logo.png';
-    for (var i = 0; i < stations.length; i++) {        
-        var marker = new google.maps.Marker({
-            stopID: stations[i][3],
-            position: {lat: stations[i][1], lng: stations[i][2]},
-            map: mapCanvas,
-            title: stations[i][0],
-            icon: MBTALogo,
+function getLocation(myMap) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            console.log(position);
+            meMarker = new google.maps.Marker({
+                position: {lat: position.coords.latitude, lng: position.coords.longitude},
+                map: myMap,
+                title: "Me wohooo",
+            })
+            meMarker.setMap(mapCanvas);
+            mapCanvas.panTo({lat: position.coords.latitude, lng: position.coords.longitude});
         });
-        marker.setMap(mapCanvas);
-        infoWindow = new google.maps.InfoWindow();
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() {
-                infoWindow.open(mapCanvas, marker);
-                loadTrainSchedule(marker);
-            }
-        })(marker, i));
     }
-    // loadTrainSchedule();
+    else 
+        alert("geolocation is not supported");
 }
-
 
 function makeLines() {
     console.log(mainPathCoords);
@@ -184,6 +182,9 @@ function makeLines() {
     }); subPath.setMap(mapCanvas);
 }
 
+function computeDistance() {
+    
+}
 
 
 
