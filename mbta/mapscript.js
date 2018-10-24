@@ -115,31 +115,33 @@ function loadTrainSchedule(marker) {
                 }
                 else {
                     departure = dept_time.split("T"),
-                    console.log("departure time: " + departure[1]);
+                    departure = departure[1]
                 }
                 if (arr_time == null) {
-                    arrival[1] = "Not Available";
+                    arrival = "Not Available";
                 }
                 else {
-                    arrival = arr_time.split("T"),
-                    console.log("arrival time: " + arrival[1]);
+                    arrival = arr_time.split("T");
+                    arrival = arrival[1];
                 }
                 if (bound == 0) {
                     boundFor = "Southbound";
-                    console.log("Bound direction: " + boundFor);
                 }
                 if (bound == 1) {
                     boundFor = "Northbound";
-                    console.log("Bound direction: " + boundFor);
                 }
                 content = "<h1>" + marker.title + "</h1>" + "<h3>" + 
-                "Arrival time: " + "</h3>" + "<h4>" + arrival[1] + "<h4>" + 
-                "<h3>" + "Departure time: " + "</h3>" + "<h4>" + departure[1] + 
+                "Arrival time: " + "</h3>" + "<h4>" + arrival + "<h4>" + 
+                "<h3>" + "Departure time: " + "</h3>" + "<h4>" + departure + 
                 "</h4>" + "<h3>" + "Bound: " + "</h3>" + "<h4>" + boundFor + 
                 "</h4>";
                 infoWindow.setContent(content);
             };
         } 
+        else {
+            content = "Schedule not currently available...";
+            infoWindow.setContent(content);
+        }
     }
     request.send();
     return infoWindow;
@@ -148,7 +150,6 @@ function loadTrainSchedule(marker) {
 function getLocation(myMap) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            console.log(position);
             meMarker = new google.maps.Marker({
                 position: {lat: position.coords.latitude, lng: position.coords.longitude},
                 map: myMap,
@@ -163,8 +164,6 @@ function getLocation(myMap) {
 }
 
 function makeLines() {
-    console.log(mainPathCoords);
-    console.log(subPathCoords);
     var mainPath = new google.maps.Polyline({
         path: mainPathCoords,
         geodesic: true,
