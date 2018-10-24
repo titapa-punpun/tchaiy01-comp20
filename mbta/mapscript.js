@@ -6,6 +6,10 @@ var content;
 var infoWindow;
 var meMarker;
 var marker;
+var distance;
+var minDistance;
+var minIndex;
+var me = [];
     
 var stations = [
     ['South Station', 42.352271, -71.05524200000001, 'place-sstat'],
@@ -151,6 +155,8 @@ function loadTrainSchedule(marker) {
 function getLocation(myMap) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
+            me.push(position.coords.latitude);
+            me.push(position.coords.longitude);
             meMarker = new google.maps.Marker({
                 position: {lat: position.coords.latitude, lng: position.coords.longitude},
                 map: myMap,
@@ -165,10 +171,32 @@ function getLocation(myMap) {
             });
             computeDistance(meMarker, marker);
         });
-        // console.log(meMarker.position.lat);
     }
     else 
         alert("geolocation is not supported");
+}
+
+function computeDistance(meMarker) {
+    minIndex = 0;
+    minDistance = google.maps.geometry.spherical.computeDistanceBetween(meMarker.getPosition(), new google.maps.LatLng(stations[minIndex][1], stations[minIndex][2]));
+    for (var i = 0; i < stations.length; i++) {
+        distance = google.maps.geometry.spherical.computeDistanceBetween(meMarker.getPosition(), new google.maps.LatLng(stations[i][1], stations[i][2]));
+        if (distance < minDistance) {
+            minDistance = distance;
+            minIndex = i;
+        }
+    }
+    drawShortestLine();
+}
+
+function drawShortestLine() {
+    var shortestPath = new google.maps.Polyline({
+        path: [{lat: me[0], lng: me[1]}, {lat: stations[minIndex][1], lng: stations[minIndex][2]}],
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+    }); shortestPath.setMap(mapCanvas);
 }
 
 function makeLines() {
@@ -189,13 +217,5 @@ function makeLines() {
     }); subPath.setMap(mapCanvas);
 }
 
-function computeDistance(meMarker) {
-    console.log(meMarker.position.lat);
-    for (var i = 0; i < stations.length; i++) {
-        var distance = google.maps.geometry.spherical.computeDistanceBetween(meMarker.getPosition(), new google.maps.LatLng(stations[i][1], stations[i][2]));
-        console.log(distance);
-    }
-
-}
 
 
