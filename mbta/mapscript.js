@@ -31,8 +31,8 @@ var stations = [
 ];
 
 var mainPathCoords = [
-    {lat: 42.39674, lng: -71.121815},
     {lat: 42.395428, lng: -71.142483},
+    {lat: 42.39674, lng: -71.121815},
     {lat: 42.3884, lng: -71.11914899999999},
     {lat: 42.373362, lng: -71.118956},
     {lat: 42.365486, lng: -71.103802},
@@ -88,11 +88,12 @@ function getLocation(myMap) {
         alert("geolocation is not supported");
 }
 
-function loadTrainSchedule() {
+function loadTrainSchedule(marker) {
     var request = new XMLHttpRequest();
     var i;
 
-    var URL = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + this.stopID;
+    API_KEY = '9ddcc2d7e29349da9012849a0ec9d993';
+    var URL = "https://api-v3.mbta.com/predictions?filter[route]=Red&filter[stop]=" + marker.stopID + "&page[limit]=10&page[offset]=0&sort=departure_time&api_key=" + API_KEY;
     request.open('GET', URL, true);
     
     request.onreadystatechange = function() {
@@ -102,11 +103,8 @@ function loadTrainSchedule() {
             for (var i = 0; i < stationSchedule.data.length; i++) {
                 var arrival, departure, boundFor;
                 var arr_time = stationSchedule.data[i].attributes.arrival_time;
-                // console.log("this is arr time " + arr_time);
                 var dept_time = stationSchedule.data[i].attributes.departure_time;
-                // console.log("this is dept time " + dept_time);
                 var bound = stationSchedule.data[i].attributes.direction_id;
-                // console.log("direction " + bound);
                 if (dept_time == null) {
                     departure = "Not Available"; 
                 }
@@ -115,11 +113,11 @@ function loadTrainSchedule() {
                     console.log("departure time: " + departure[1]);
                 }
                 if (arr_time == null) {
-                    arrival = "Not Available";
+                    arrival[1] = "Not Available";
                 }
                 else {
                     arrival = arr_time.split("T"),
-                    console.log("arrival here: " + arrival[1]);
+                    console.log("arrival time: " + arrival[1]);
                 }
                 if (bound == 0) {
                     boundFor = "Southbound";
@@ -132,8 +130,7 @@ function loadTrainSchedule() {
                 content = "<h3>" + "Arrival time: " + "</h3>" + "<h4>" 
                 + arrival[1] + "<h4>" + "<h3>" + "Departure time: " 
                 + "</h3>" + "<h4>" + departure[1] + "</h4>" + "<h3>" + 
-                "Bounded for: " + "</h3>" + "<h4>" + boundFor + "</h4>";
-                console.log(content),
+                "Bound: " + "</h3>" + "<h4>" + boundFor + "</h4>";
                 infoWindow.setContent(content);
             };
         } 
@@ -158,7 +155,7 @@ function placeMarkers() {
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
                 infoWindow.open(mapCanvas, marker);
-                loadTrainSchedule();
+                loadTrainSchedule(marker);
             }
         })(marker, i));
     }
