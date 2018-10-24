@@ -4,6 +4,8 @@ var myLng = 0;
 var markers = [];
 var content;
 var infoWindow;
+var meMarker;
+var marker;
     
 var stations = [
     ['South Station', 42.352271, -71.05524200000001, 'place-sstat'],
@@ -69,13 +71,12 @@ function initMap() {
     placeMarkers(content);
     getLocation(mapCanvas);
     makeLines();
-    computeDistance();
 }
 
 function placeMarkers() {
     var MBTALogo = 'MBTA_logo.png';
     for (var i = 0; i < stations.length; i++) {        
-        var marker = new google.maps.Marker({
+        marker = new google.maps.Marker({
             stopID: stations[i][3],
             position: {lat: stations[i][1], lng: stations[i][2]},
             map: mapCanvas,
@@ -139,7 +140,7 @@ function loadTrainSchedule(marker) {
             };
         } 
         else {
-            content = "Schedule not currently available...";
+            content = "<h4>" + "Schedule currently not available..." + "</h4>";
             infoWindow.setContent(content);
         }
     }
@@ -153,11 +154,18 @@ function getLocation(myMap) {
             meMarker = new google.maps.Marker({
                 position: {lat: position.coords.latitude, lng: position.coords.longitude},
                 map: myMap,
-                title: "Me wohooo",
+                title: "I'm here!",
             })
             meMarker.setMap(mapCanvas);
             mapCanvas.panTo({lat: position.coords.latitude, lng: position.coords.longitude});
+            google.maps.event.addListener(meMarker, 'click', function() {
+                infoWindow.setContent(meMarker.title);
+                infoWindow.open(mapCanvas, meMarker);
+
+            });
         });
+        // console.log(meMarker.position.lat);
+        // computeDistance(meMarker, marker);
     }
     else 
         alert("geolocation is not supported");
@@ -181,9 +189,13 @@ function makeLines() {
     }); subPath.setMap(mapCanvas);
 }
 
-function computeDistance() {
-    
-}
+// function computeDistance(meMarker, marker) {
+//     console.log(meMarker.position.lat);
+//     for (var i = 0; i < stations.length; i++) {
+        
+//         var distance = google.maps.computeDistanceBetween(meMarker.position.lat, meMarker.position.lng, marker.position.lat, marker.position.lng);
+//     }
 
+// }
 
 
