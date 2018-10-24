@@ -4,7 +4,7 @@ var myLng = 0;
 var markers = [];
 var content;
 var infoWindow;
-  
+   
 var stations = [
     ['South Station', 42.352271, -71.05524200000001, 'place-sstat'],
     ['Andrew', 42.330154, -71.057655, 'place-andrw'],
@@ -72,17 +72,16 @@ function initMap() {
 }
 
 function getLocation(myMap) {
-    console.log("inside getLocation()")
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             console.log(position);
-            var meMarker = new google.maps.Marker({
+            meMarker = new google.maps.Marker({
                 position: {lat: position.coords.latitude, lng: position.coords.longitude},
                 map: myMap,
                 title: "Me wohooo",
             })
             meMarker.setMap(mapCanvas);
-            // mapCanvas.panTo(meMarker);
+            mapCanvas.panTo({lat: position.coords.latitude, lng: position.coords.longitude});
         });
     }
     else 
@@ -92,10 +91,10 @@ function getLocation(myMap) {
 function loadTrainSchedule() {
     var request = new XMLHttpRequest();
     var i;
-    for (i = 0; i < stations.length; i++) {
-        var URL = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stations[i][3];
-        request.open('GET', URL, true);
-    }
+
+    var URL = "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + this.stopID;
+    request.open('GET', URL, true);
+    
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
             theData = request.responseText;
@@ -129,10 +128,9 @@ function loadTrainSchedule() {
                 if (bound == 1) {
                     boundFor = "Northbound";
                     console.log("Bound direction: " + boundFor);
-
                 }
-                content += "<h3>" + "Arrival time: " + "</h3>" + "<h4>" 
-                + arrival[1] + "<h4>" + "<br>" + "<h3>" + "Departure time: " 
+                content = "<h3>" + "Arrival time: " + "</h3>" + "<h4>" 
+                + arrival[1] + "<h4>" + "<h3>" + "Departure time: " 
                 + "</h3>" + "<h4>" + departure[1] + "</h4>" + "<h3>" + 
                 "Bounded for: " + "</h3>" + "<h4>" + boundFor + "</h4>";
                 console.log(content),
@@ -149,6 +147,7 @@ function placeMarkers() {
     var MBTALogo = 'MBTA_logo.png';
     for (var i = 0; i < stations.length; i++) {        
         var marker = new google.maps.Marker({
+            stopID: stations[i][3],
             position: {lat: stations[i][1], lng: stations[i][2]},
             map: mapCanvas,
             title: stations[i][0],
@@ -158,12 +157,12 @@ function placeMarkers() {
         infoWindow = new google.maps.InfoWindow();
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-                // infoWindow.setContent(stations[i][0]);
                 infoWindow.open(mapCanvas, marker);
+                loadTrainSchedule();
             }
         })(marker, i));
     }
-    loadTrainSchedule();
+    // loadTrainSchedule();
 }
 
 
