@@ -127,10 +127,11 @@ function loadTrainSchedule(marker) {
                     boundFor = "Northbound";
                     console.log("Bound direction: " + boundFor);
                 }
-                content = "<h3>" + "Arrival time: " + "</h3>" + "<h4>" 
-                + arrival[1] + "<h4>" + "<h3>" + "Departure time: " 
-                + "</h3>" + "<h4>" + departure[1] + "</h4>" + "<h3>" + 
-                "Bound: " + "</h3>" + "<h4>" + boundFor + "</h4>";
+                content = "<h1>" + marker.title + "</h1>" + "<h3>" + 
+                "Arrival time: " + "</h3>" + "<h4>" + arrival[1] + "<h4>" + 
+                "<h3>" + "Departure time: " + "</h3>" + "<h4>" + departure[1] + 
+                "</h4>" + "<h3>" + "Bound: " + "</h3>" + "<h4>" + boundFor + 
+                "</h4>";
                 infoWindow.setContent(content);
             };
         } 
