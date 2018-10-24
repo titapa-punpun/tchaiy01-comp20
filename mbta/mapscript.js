@@ -137,15 +137,15 @@ function loadTrainSchedule(marker) {
                     boundFor = "Northbound";
                 }
                 content = "<h1>" + marker.title + "</h1>" + "<h3>" + 
-                "Arrival time: " + "</h3>" + "<h4>" + arrival + "<h4>" + 
-                "<h3>" + "Departure time: " + "</h3>" + "<h4>" + departure + 
+                "Arrival Time: " + "</h3>" + "<h4>" + arrival + "<h4>" + 
+                "<h3>" + "Departure Time: " + "</h3>" + "<h4>" + departure + 
                 "</h4>" + "<h3>" + "Bound: " + "</h3>" + "<h4>" + boundFor + 
                 "</h4>";
                 infoWindow.setContent(content);
             };
         } 
         else {
-            content = "Schedule is currently unavailable...";
+            content = "Schedule is currently unavailable. Please check back later.";
             infoWindow.setContent(content);
         }
     }
@@ -222,6 +222,3 @@ function makeLines() {
         strokeWeight: 2
     }); subPath.setMap(mapCanvas);
 }
-
-
-
