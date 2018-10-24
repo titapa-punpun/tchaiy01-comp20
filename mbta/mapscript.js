@@ -140,7 +140,7 @@ function loadTrainSchedule(marker) {
             };
         } 
         else {
-            content = "<h4>" + "Schedule currently not available..." + "</h4>";
+            content = "Schedule is currently unavailable...";
             infoWindow.setContent(content);
         }
     }
@@ -163,9 +163,9 @@ function getLocation(myMap) {
                 infoWindow.open(mapCanvas, meMarker);
 
             });
+            computeDistance(meMarker, marker);
         });
         // console.log(meMarker.position.lat);
-        // computeDistance(meMarker, marker);
     }
     else 
         alert("geolocation is not supported");
@@ -189,13 +189,13 @@ function makeLines() {
     }); subPath.setMap(mapCanvas);
 }
 
-// function computeDistance(meMarker, marker) {
-//     console.log(meMarker.position.lat);
-//     for (var i = 0; i < stations.length; i++) {
-        
-//         var distance = google.maps.computeDistanceBetween(meMarker.position.lat, meMarker.position.lng, marker.position.lat, marker.position.lng);
-//     }
+function computeDistance(meMarker) {
+    console.log(meMarker.position.lat);
+    for (var i = 0; i < stations.length; i++) {
+        var distance = google.maps.geometry.spherical.computeDistanceBetween(meMarker.getPosition(), new google.maps.LatLng(stations[i][1], stations[i][2]));
+        console.log(distance);
+    }
 
-// }
+}
 
 
