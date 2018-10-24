@@ -10,6 +10,7 @@ var distance;
 var minDistance;
 var minIndex;
 var me = [];
+var closestStationContent;
     
 var stations = [
     ['South Station', 42.352271, -71.05524200000001, 'place-sstat'],
@@ -165,7 +166,7 @@ function getLocation(myMap) {
             meMarker.setMap(mapCanvas);
             mapCanvas.panTo({lat: position.coords.latitude, lng: position.coords.longitude});
             google.maps.event.addListener(meMarker, 'click', function() {
-                infoWindow.setContent(meMarker.title);
+                infoWindow.setContent(closestStationContent);
                 infoWindow.open(mapCanvas, meMarker);
 
             });
@@ -186,6 +187,11 @@ function computeDistance(meMarker) {
             minIndex = i;
         }
     }
+    closestStationContent = "<h4>" + "Closest Station: " + "</h4>" + "<h3>" 
+                            + stations[minIndex][0] + "</h3>" + "<h4>" + 
+                            "Distance Away: " + "</h4>" + "<h3>" + 
+                            ((minDistance / 1609.344).toString()).substring(0, 4)
+                            + " miles" + "</h3>";
     drawShortestLine();
 }
 
