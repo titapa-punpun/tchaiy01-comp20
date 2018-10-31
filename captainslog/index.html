@@ -10,18 +10,23 @@
     <script>
         $(document).ready(function() {
             $("#msg").keypress(function(event) {
-                console.log("inside funtion");
                 var user_entry;
                 var curr_date = new Date();
-                var date_time = "Month: " + (curr_date.getMonth() + 1) + ", Date: " + (curr_date.getDate()) + ", Year: " + (curr_date.getFullYear()) + ", Time: " + (curr_date.getHours()) + ":" + (curr_date.getMinutes()) + ":" + (curr_date.getSeconds());
+                var date_time = curr_date.toDateString() + " " + (curr_date.getHours()) + ":" + (curr_date.getMinutes()) + ":" + (curr_date.getSeconds());
                 console.log(date_time);
                 var enter_key = event.which;
                 if (enter_key == 13) {
-                    user_entry = $("#msg").val();
+                    user_entry = $("#msg").val() + "  " + date_time;
                     localStorage.setItem(date_time, user_entry);
+
                 }
-                
-                // user_entry = document.getElementById("log");
+                elem = $("#log").val();
+                output = " ";
+                for (var i = 0; i < localStorage.length; i++) {
+                    output = output + "<p>" + localStorage.getItem(localStorage.key(i)) + "</p>\n";
+                    console.log(output);
+                }
+                $("#log").html(output);
             });
         });
     </script> 
