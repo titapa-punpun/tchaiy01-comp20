@@ -16,22 +16,23 @@
             $("#log").html(output);
 
             $("#msg").keypress(function(event) {
-                var user_entry;
-                var curr_date = new Date();
-                var date_time = curr_date.toDateString() + " " + (curr_date.getHours()) + ":" + (curr_date.getMinutes()) + ":" + (curr_date.getSeconds());
                 var enter_key = event.which;
                 if (enter_key == 13) {
-                    user_entry = $("#msg").val() + "  " + date_time;
-                    localStorage.setItem(date_time, user_entry);
-                    $("#msg").val("");
+                    var user_entry;
+                    var curr_date = new Date();
+                    var date_time = curr_date.toDateString() + " " + (curr_date.getHours()) + ":" + (curr_date.getMinutes()) + ":" + (curr_date.getSeconds());
+                    
+                        user_entry = $("#msg").val() + "  " + date_time;
+                        localStorage.setItem(date_time, user_entry);
+                        $("#msg").val("");
 
+                    output = " ";
+                    for (var i = 0; i < localStorage.length; i++) {
+                        output = "<p>" + localStorage.getItem(localStorage.key(i)) + "</p>\n" + output;
+                    }
+                    
+                    $("#log").html(output);
                 }
-                elem = $("#log").val();
-                output = " ";
-                for (var i = 0; i < localStorage.length; i++) {
-                    output = "<p>" + localStorage.getItem(localStorage.key(i)) + "</p>\n" + output;
-                }
-                $("#log").html(output);
             });
         });
     </script> 
