@@ -17,6 +17,7 @@ IMPLEMENTATION:
 COLLABORATION:
 * TA Michael Robinson (helped explain concept of local storage)
 * TA Ralfi (helped with getting latest entry to display on top)
+
 Resources Used: 
 * https://stackoverflow.com/questions/18160342/jquery-how-to-trigger-click-event-on-pressing-enter-key
 
@@ -24,4 +25,4 @@ Resources Used:
 
 
 TIME SPENT: 
-* About an hour and 45 minutes
+* About 2 hours
