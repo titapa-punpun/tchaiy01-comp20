@@ -145,17 +145,15 @@ GameManager.prototype.move = function (direction) {
       'score': this.score,
       'grid': JSON.stringify(this.grid)
     }
-    console.log(parameters.grid);
     http.open("POST", URL, true);
 
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     
     http.onreadystatechange = function() {
         if (http.readyState == 4 && http.status == 200) {
-            alert(http.responseText);
+            alert("Thank you for playing!");
         }
     }
-    console.log(parameters);
     http.send("username=" + parameters.username + "&score=" + parameters.score + "&grid=" + parameters.grid);
   }
   
