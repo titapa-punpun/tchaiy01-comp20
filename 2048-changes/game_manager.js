@@ -133,7 +133,6 @@ GameManager.prototype.move = function (direction) {
   var self = this;
 
   if (this.isGameTerminated()) {
-  // if (1 == 1) { 
     var http = new XMLHttpRequest();
     var URL = 'https://game-2048-edited.herokuapp.com/submit';
     var username = prompt("Enter usename: ");
@@ -148,13 +147,20 @@ GameManager.prototype.move = function (direction) {
     http.open("POST", URL, true);
 
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    if (username == [] || score == [] || grid == []) {
+      alert("Missing information");
+    }
     
-    http.onreadystatechange = function() {
+    else {
+      http.onreadystatechange = function() {
         if (http.readyState == 4 && http.status == 200) {
             alert("Thank you for playing!");
         }
+      }
+      http.send("username=" + parameters.username + "&score=" + parameters.score + "&grid=" + parameters.grid);
     }
-    http.send("username=" + parameters.username + "&score=" + parameters.score + "&grid=" + parameters.grid);
+    
   }
   
 
