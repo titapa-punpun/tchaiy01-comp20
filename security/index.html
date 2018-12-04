@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+  
+<html>
+ 
+<head>
+  <title>Assignment 4</title>
+  <link rel="stylesheet" href="responsive.css"/>
+  <meta charset="utf-8" />
+</head>
+
+<body>
+	<h2>Introduction</h2>
+		<p>For this assignment, I have been given the client-side and server-side of the 2048 game modified by my partner, Ethan Chen. Unfortunately, the code has security and privacy vulnerabilities, and I have been hired as a security consultant to document and resolve the security and privacy issues in the applications.</p>
+
+	<h2>Methodology</h2>
+		<p></p>
+
+	<h2>Abstract of Findings</h2>
+		<p></p>
+
+	<h2>Issues Found</h2>
+		<h4>Issue</h4>
+			<h5>Really bad programming practice.</h5>
+		<h4>Location</h4>
+			<h5>gamemanager.js: line 92</h5>
+		<h4>Severity of Issue</h4>
+			<h5>Medium Severity. Although this is technically not exactly a vulnerability, it is really bad programming practice because hard-coding username is extremely rigid and constrained.</h5>
+		<h4>Description of Issue</h4>
+			<h5>Hard-coding username is very inflexible because the username will always be "Ethan" in this case. It doesn't allow user to input his/her actual username because it will always default to the hard-coded username. Users are unable to save their scores to a unique name, which means it will be hard to identify which score belongs to which user since they are all "Ethan."</h5>
+		<h4>Proof of Vulnerability</h4>
+			<h5></h5>
+		<h4>Resolution</h4>
+			<h5></h5>
+
+		<h4>Issue</h4>
+			<h5>CORS</h5>
+		<h4>Location</h4>
+			<h5></h5>
+		<h4>Severity of Issue</h4>
+			<h5></h5>
+		<h4>Description of Issue</h4>
+			<h5></h5>
+		<h4>Proof of Vulnerability</h4>
+			<h5></h5>
+		<h4>Resolution</h4>
+			<h5></h5>
+
+		<h4>Issue</h4>
+			<h5></h5>
+		<h4>Location</h4>
+			<h5></h5>
+		<h4>Severity of Issue</h4>
+			<h5></h5>
+		<h4>Description of Issue</h4>
+			<h5></h5>
+		<h4>Proof of Vulnerability</h4>
+			<h5></h5>
+		<h4>Resolution</h4>
+			<h5></h5>
+
+
+An XSS vulnerability arises when web applications take data from users and dynamically include it in web pages without first properly validating the data.
+
+XSS vulnerabilities may occur if:
+- Input coming into web applications is not validated
+- Output to the browser is not HTML encoded
+	<h2>Conclusion</h2>
+
+	<h2>References</h2>
+</body>
+
+</html>
+
+
