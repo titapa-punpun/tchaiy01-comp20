@@ -9,64 +9,95 @@
 </head>
 
 <body>
-	<h2>Introduction</h2>
+	<h2>Introduction</h2> 
 		<p>For this assignment, I have been given the client-side and server-side of the 2048 game modified by my partner, Ethan Chen. Unfortunately, the code has security and privacy vulnerabilities, and I have been hired as a security consultant to document and resolve the security and privacy issues in the applications.</p>
 
+	<hr> 
+
 	<h2>Methodology</h2>
-		<p></p>
+		<p>I mainly used curl on terminal to crack my partner's code. I also used a variety of user input through the game and the query string to try to insert unwanted information and mess with my partner's code.</p>
 
+	<hr>
+ 
 	<h2>Abstract of Findings</h2>
-		<p></p>
+		<p>Overall, the security and privacy issues I've identified involves not validating user input and not validating user's request for information. Authorization is necessary for privacy issues because we don't want private information in the wrong hands. Not authenticating or validating user input could result in harmful information ouput to the user or inserted into the database.</p>
 
-	<h2>Issues Found</h2>
-		<h4>Issue</h4>
-			<h5>Really bad programming practice.</h5>
-		<h4>Location</h4>
-			<h5>gamemanager.js: line 92</h5>
-		<h4>Severity of Issue</h4>
-			<h5>Medium Severity. Although this is technically not exactly a vulnerability, it is really bad programming practice because hard-coding username is extremely rigid and constrained.</h5>
-		<h4>Description of Issue</h4>
-			<h5>Hard-coding username is very inflexible because the username will always be "Ethan" in this case. It doesn't allow user to input his/her actual username because it will always default to the hard-coded username. Users are unable to save their scores to a unique name, which means it will be hard to identify which score belongs to which user since they are all "Ethan."</h5>
-		<h4>Proof of Vulnerability</h4>
-			<h5></h5>
-		<h4>Resolution</h4>
-			<h5></h5>
+	<hr>
+ 
+	<h2>Issues Found:</h2>
+		<h3>Issue 1</h3>
+			<p>Really bad programming practice.</p>
+		<h3>Location</h3>
+			<p>gamemanager.js: line 92</p>
+		<h3>Severity of Issue</h3>
+			<p>Medium Severity. Although this is technically not exactly a vulnerability, it is really bad programming practice because hard-coding username is extremely rigid and constrained.</p>
+		<h3>Description of Issue</h3>
+			<p>Hard-coding username (or hard-coding anything) is bad programming practice. With this hard-code, Ethan is giving away is credential to users. We never want to give any any credentials to users without validating them.</p>
+		<h3>Proof of Vulnerability</h3>
+			<p><img src = "bad_coding_prac.jpg" width = "1400" height = "40" alt="" /></p>
+		<h3>Resolution</h3>
+			<p>To resolve this very bad programming practice, my partner could prompt the user to enter their username. This will allow each user to have his/her own unique username instead of always being "Ethan." Sample code: var username = prompt("Enter usename: "); He should also delete the "Ethan" part from "username=Ethan&".</p>
+		
+		<hr>
 
-		<h4>Issue</h4>
-			<h5>CORS</h5>
-		<h4>Location</h4>
-			<h5></h5>
-		<h4>Severity of Issue</h4>
-			<h5></h5>
-		<h4>Description of Issue</h4>
-			<h5></h5>
-		<h4>Proof of Vulnerability</h4>
-			<h5></h5>
-		<h4>Resolution</h4>
-			<h5></h5>
+		<h3>Issue 2</h3>
+			<p>XSS</p>
+		<h3>Location</h3>
+			<p>the ./submit part</p>
+			<p><img src = ":submit.jpg" width = "700" height = "450" alt="" /></p>
+		<h3>Severity of Issue</h3>
+			<p>High severity. There is no access prevention. I was able to redirect my partner's heroku to another site (google in this case), which is a huge issue because it means the hacker would be able to redirect users to any malicious website.</p>
+		<h3>Description of Issue</h3>
+			<p>The issue with this is that the logic of /submit route is not preventing XSS at all. It takes data from users without first properly validating the data. Not checking user's input before saving it is a big problem because you NEVER TRUST USER INPUT. Because my partner's code trusts user input, the hacker could input anything, including harmful links like how I was able to redirect it to google.com.</p>
+		<h3>Proof of Vulnerability</h3>
+			<p><img src = "1.jpg" width = "700" height = "425" alt="" /></p>
+			<p>When I run my partner's heroku with the /submit route, it redirects me to www.google.com. The screenshot of this is not included because the redirecting happens very fast.</p>
+		<h3>Resolution</h3>
+			<p>To resolve this XSS issue, my partner could do several things: limit amount of characters, check for input before taking it in, check for special characters in input and clean away those special characters before inserting them into the database.</p>
 
-		<h4>Issue</h4>
-			<h5></h5>
-		<h4>Location</h4>
-			<h5></h5>
-		<h4>Severity of Issue</h4>
-			<h5></h5>
-		<h4>Description of Issue</h4>
-			<h5></h5>
-		<h4>Proof of Vulnerability</h4>
-			<h5></h5>
-		<h4>Resolution</h4>
-			<h5></h5>
+		<hr>
 
+		<h3>Issue 3</h3>
+			<p>CORS</p>
+		<h3>Location</h3>
+			<p>index.js: line 6</p>
+			<p>index.js: line 15</p>
+		<h3>Severity of Issue</h3>
+			<p>High severity. The requested resource allows sharing with every origin.</p>
+		<h3>Description of Issue</h3>
+			<p>Because CORS is enabled for any domain, it gives anyone ability to access the database and submit information into the database. Any site can send an XHR request to this site and access the server’s response.</p>
+		<h3>Proof of Vulnerability</h3>
+			<p><img src = "cors.jpg" width = "700" height = "425" alt="" /></p>
+		<h3>Resolution</h3>
+			<p>Don't implement this CORS response. Or, my partner could check for authentication before allowing any site or anyone to access the database.</p>
 
-An XSS vulnerability arises when web applications take data from users and dynamically include it in web pages without first properly validating the data.
+	<hr> 
 
-XSS vulnerabilities may occur if:
-- Input coming into web applications is not validated
-- Output to the browser is not HTML encoded
+		<h3>Issue 4</h3>
+			<p>Database Injection</p>
+		<h3>Location</h3>
+			<p>The /scores.json route</p>
+			<p><img src = "scoresjson.jpg" width = "1400" height = "425" alt="" /></p>
+		<h3>Severity of Issue</h3>
+			<p>High severity. This allows hackers to trick the server into giving them information they shouldn't be able to access without authorization.</p>
+		<h3>Description of Issue</h3>
+			<p>This issue here is that the database is like a naive child who trusts anyone who wants to access it. I was able to use "mongo language" to trick the database into giving me all the scores stored from all the users by telling "any username that is not dog." This was done by putting logic into the database using "mongo language". This is shown in the picture below, as the query string added to the URL is "?username[$ne]=dog".</p>
+		<h3>Proof of Vulnerability</h3>
+			<p><img src = "Injection.jpg" width = "1000" height = "650" alt="" /></p>
+		<h3>Resolution</h3>
+			<p>A way to resolve this issue is to ask for authorization or authentication before giving out any information stored in the database. My partner could also verify that the query string is not meant to trick the database by thoroughly checking over the query string, which is the user input. Again, NEVER TRUST USER INPUT.</p>
+
+	<hr> 
+
 	<h2>Conclusion</h2>
+		<p>Web security is extremely important in any web application implementation. I recommend my partner to ask for authentication and also check every single thing the user inputs before storing it into the database. My partner should protect his front end from intaking false input, and should protect the database from receiving any unwanted injections. To me, the most important thing is to VALIDATE USER INPUT.</p>
+	<hr>
 
 	<h2>References</h2>
+		<p>https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet</p>
+		<p>https://stackoverflow.com/questions/503093/how-do-i-redirect-to-another-webpage</p>
+		<p>https://stackoverflow.com/questions/12001269/what-are-the-security-risks-of-setting-access-control-allow-origin</p>
+		<p>https://www.owasp.org/index.php/Top_10_2013-Top_10</p>
 </body>
 
 </html>
